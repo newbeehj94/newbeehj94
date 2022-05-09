@@ -1,0 +1,376 @@
+목표 : xbox 4세대 조이스틱을 사용하여 raspberry pi RC_Car를 조종하기
+
+
+1. opencv를 설치한다.
+2. 카메라 설정을 한다.
+3. raspberry pi에 Qjoypad를 설치한다. 
+4. Qjoypad의 키보드 설정을 한다.
+5. RC카를 조종하는 python코드를 입력한다.
+6. Qjoypad를 키고 python코드를 컨파일러하여 RC카를 조종한다.
+
+
+
+1. opencv를 설치한다.
+터미널을 킨다.
+$sudo apt-get update
+$sudo apt-get upgrade
+리부트한다.
+opencv를 설치할 공간확보하는 작업.
+$ sudo apt-get clean          
+$ sudo apt-get autoremovname 
+
+$ uame -a 
+2020 aarch64가 출력되면 os가 64bit
+2020 armv7l이 출력되면 os가 32bit이다.
+32bit로 다시 설치하도록하자.
+
+
+라즈베리파이를 설치할때에 raspberry pi os (Legacy)로 설치하도록 하자. 
+bulleye라는 파일로 설치할 시에 설치가 되지 않는다.
+buster라는 이름이 들어가는 파일로 설치하도록 하자.
+
+
+opencv의 소프트웨어를 설치하는 명령어를 입력.
+$ sudo apt-get install build-essential cmake git unzip pkg-config
+$ sudo apt-get install libjpeg-dev libpng-dev libtiff-dev
+$ sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev
+$ sudo apt-get install libgtk2.0-dev libcanberra-gtk*
+$ sudo apt-get install libxvidcore-dev libx264-dev libgtk-3-dev
+$ sudo apt-get install python3-dev python3-numpy
+$ sudo apt-get install libtbb2 libtbb-dev libdc1394-22-dev
+$ sudo apt-get install libv4l-dev v4l-utils
+$ sudo apt-get install libjasper-dev libopenblas-dev libatlas-base-dev
+$ sudo apt-get install libblas-dev liblapack-dev gfortran
+$ sudo apt-get install gcc-arm*
+$ sudo apt-get install protobuf-compiler
+$ sudo apt-get install python-dev python-numpy
+
+
+opencv 다운로드를 시작한다.
+$ cd ~
+$ wget -O opencv.zip https://github.com/opencv/opencv/archive/4.1.2.zip
+$ wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.1.2.zip
+
+$ unzip opencv.zip
+$ unzip opencv_contrib.zip
+
+
+cmake파일을 다운받는다. 
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+        -D ENABLE_NEON=ON \
+        -D ENABLE_VFPV3=ON \
+        -D WITH_OPENMP=ON \
+        -D BUILD_TIFF=ON \
+        -D WITH_FFMPEG=ON \
+        -D WITH_TBB=ON \
+        -D BUILD_TBB=ON \
+        -D BUILD_TESTS=OFF \
+        -D WITH_EIGEN=OFF \
+        -D WITH_GSTREAMER=OFF \
+        -D WITH_V4L=ON \
+        -D WITH_LIBV4L=ON \
+        -D WITH_VTK=OFF \
+        -D OPENCV_EXTRA_EXE_LINKER_FLAGS=-latomic \
+        -D OPENCV_ENABLE_NONFREE=ON \
+        -D INSTALL_C_EXAMPLES=OFF \
+        -D INSTALL_PYTHON_EXAMPLES=OFF \
+        -D BUILD_NEW_PYTHON_SUPPORT=ON \
+        -D BUILD_opencv_python3=TRUE \
+        -D OPENCV_GENERATE_PKGCONFIG=ON \
+        -D BUILD_EXAMPLES=OFF ..
+        
+        
+다음은 cmake파일을 입력하고 출력되는 내용이다. 다음과 같이 출력되는지 확인하도록 하자.        
+        -- General configuration for OpenCV 4.1.2 =====================================
+--   Version control:               unknown
+--
+--   Extra modules:
+--     Location (extra):            /home/pi/opencv_contrib/modules
+--     Version control (extra):     unknown
+--
+--   Platform:
+--     Timestamp:                   2019-10-18T12:15:44Z
+--     Host:                        Linux 4.19.66-v7+ armv7l
+--     CMake:                       3.13.4
+--     CMake generator:             Unix Makefiles
+--     CMake build tool:            /usr/bin/make
+--     Configuration:               RELEASE
+--
+--   CPU/HW features:
+--     Baseline:                    VFPV3 NEON
+--       requested:                 DETECT
+--       required:                  VFPV3 NEON     //<- 확인
+--
+--   C/C++:
+--     Built as dynamic libs?:      YES
+--     C++ Compiler:                /usr/bin/c++  (ver 8.3.0)
+***********************
+--     C Compiler:                  /usr/bin/cc
+***********************
+--     Documentation:               NO
+--     Non-free algorithms:         YES
+***********************
+--   Video I/O:
+--   DC1394:                      YES (2.2.5)
+--   FFMPEG:                      YES
+--     avcodec:                   YES (58.35.100)
+--     avformat:                  YES (58.20.100)
+--     avutil:                    YES (56.22.100)
+--     swscale:                   YES (5.3.100)
+--     avresample:                NO
+--   GStreamer:                   NO
+--   v4l/v4l2:                    YES (linux/videodev2.h)         //<- 확인
+***********************
+--   Python 2:                                                    //<-확인
+--     Interpreter:                 /usr/bin/python2.7 (ver 2.7.16)
+--     Libraries:                   /usr/lib/arm-linux-gnueabihf/libpython2.7.so (ver 2.7.16)
+--     numpy:                       /usr/lib/python2.7/dist-packages/numpy/core/include (ver 1.16.2)
+--     install path:                lib/python2.7/dist-packages/cv2/python-2.7
+--
+--   Python 3:                                                    //<-확인
+--     Interpreter:                 /usr/bin/python3 (ver 3.7.3)
+--     Libraries:                   /usr/lib/arm-linux-gnueabihf/libpython3.7m.so (ver 3.7.3)
+--     numpy:                       /usr/lib/python3/dist-packages/numpy/core/include (ver 1.16.2)
+--     install path:                lib/python3.7/dist-packages/cv2/python-3.7
+--
+--   Python (for build):            /usr/bin/python2.7
+***********************
+--   Install to:                    /usr/local
+-- -----------------------------------------------------------------
+
+
+
+메모리 스왑공간을 확장하기 위해 메모리 공간을 설정한다.
+$ sudo nano /etc/dphys-swapfile
+
+주석처리 되지않은 
+
+CONF_SWAPSIZE=100
+
+CONF_SWAPSIZE=2048로 바꿔주도록 하자.
+ctrl+o를 누르고 enter를 누르자. (저장)
+ctrl+x로 nano문을 나가자. 
+
+그 후 스왑 공간을 활성화하는 명령어이다.
+$ sudo /etc/init.d/dphys-swapfile stop
+$ sudo /etc/init.d/dphys-swapfile start
+
+make파일을 다운받을 것이다. 굉장히 시간이 오래걸리기 때문에 좋은 인터넷 환경을 구성하도록 하고 다운을 받도록 하자.
+$ make -j4
+
+[100%] Built target opencv...(중략)
+pi@raspberrypi:~/opencv/build $ 
+출력이 끝날때까지 기다리고
+
+다음 명령어를 입력한다.
+$ sudo make install
+$ sudo ldconfig
+$ make clean
+$ sudo apt-get update
+
+opencv 4.1버전이 다운로드 완료 되었다.
+
+
+메모리 확장한 2048을 100으로 다시 변경해주자.
+$ sudo nano /etc/dphys-swapfile
+
+CONF_SWAPSIZE=100
+
+$ sudo reboot
+
+
+리부트가 완료되면 터미널을 켜서 python으로 opencv가 활성화되는지 확인한다.
+
+$python
+>>> import cv2
+>>>cv2.__version__
+'4.1.2
+
+
+출력이 확인되면 opencv를 잘 사용하도록 하자.
+
+2. 카메라 설치
+
+최신업그레이드 하고
+$ sudo apt-get update
+$ sudo apt-get upgrade
+리부트
+
+$ sudo raspi-config
+
+- 3 Interface Options를 누르고
+- 1 camera를 눌러 enable한다.
+기본설정 raspberry pi configuration에 들어가서
+Interfaces탭에서 camera를 enable한 다음 ok버튼을 눌러 리부트를 한다.
+
+
+cheese설치
+$sudo apt-get install cheese -y
+
+치즈로 카메라를 확인한다.
+
+
+3. Qjoypad 설치
+
+$ sudo apt-get update
+$ sudo apt-get upgrade
+리부트
+
+
+$ sudo apt install qjoypad
+명령어를 사용해 다운로드한다.
+
+4. Qjoypad 설정
+
+게임탭의 Qjoypad에 들어가서
+Add를 눌러 레이아웃이름을 설정하고 조이스틱이 입력하는 값을 Quick Set을 눌러 설정한다.
+
+axis1,axis2는 따로 설정해주고 나머지는 quick set을 눌러 설정해주자.
+axis1,axis2는 마우스 커서이다. gradient를 누르고 keyboard 탭을 mouse(Hor.),mouse(Vert.)로 설정해주었다.
+
+quick set을 눌르고 조이스틱 키를 누른 후 키보드의 버튼을 한번씩 번갈아가며 설정해준다.
+button1 down
+button2 right
+button4 left
+button up
+button11 Q
+button14 mouse[왼쪽 클릭]
+button15 mouse[오른쪽 클릭]
+설정을 마친 후 update를 눌러 저장해준다.
+
+
+5. RC카를 조종하는 python코드를 입력한다.
+----------------------------------------------------------------------------------------
+import cv2
+import RPi.GPIO as GPIO
+import time
+
+PWMA = 18
+AIN1   =  22
+AIN2   =  27
+
+PWMB = 23
+BIN1   = 25
+BIN2  =  24
+
+def motor_back(speed):
+    L_Motor.ChangeDutyCycle(speed)
+    GPIO.output(AIN2,False)#AIN2
+    GPIO.output(AIN1,True) #AIN1
+    R_Motor.ChangeDutyCycle(speed)
+    GPIO.output(BIN2,False)#BIN2
+    GPIO.output(BIN1,True) #BIN1
+    
+def motor_go(speed):
+    L_Motor.ChangeDutyCycle(speed)
+    GPIO.output(AIN2,True)#AIN2
+    GPIO.output(AIN1,False) #AIN1
+    R_Motor.ChangeDutyCycle(speed)
+    GPIO.output(BIN2,True)#BIN2
+    GPIO.output(BIN1,False) #BIN1
+
+def motor_stop():
+    L_Motor.ChangeDutyCycle(0)
+    GPIO.output(AIN2,False)#AIN2
+    GPIO.output(AIN1,False) #AIN1
+    R_Motor.ChangeDutyCycle(0)
+    GPIO.output(BIN2,False)#BIN2
+    GPIO.output(BIN1,False) #BIN1
+    
+def motor_right(speed):
+    L_Motor.ChangeDutyCycle(speed)
+    GPIO.output(AIN2,True)#AIN2
+    GPIO.output(AIN1,False) #AIN1
+    R_Motor.ChangeDutyCycle(0)
+    GPIO.output(BIN2,False)#BIN2
+    GPIO.output(BIN1,True) #BIN1
+    
+def motor_left(speed):
+    L_Motor.ChangeDutyCycle(0)
+    GPIO.output(AIN2,False)#AIN2
+    GPIO.output(AIN1,True) #AIN1
+    R_Motor.ChangeDutyCycle(speed)
+    GPIO.output(BIN2,True)#BIN2
+    GPIO.output(BIN1,False) #BIN1
+        
+GPIO.setwarnings(False) 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(AIN2,GPIO.OUT)
+GPIO.setup(AIN1,GPIO.OUT)
+GPIO.setup(PWMA,GPIO.OUT)
+
+GPIO.setup(BIN1,GPIO.OUT)
+GPIO.setup(BIN2,GPIO.OUT)
+GPIO.setup(PWMB,GPIO.OUT)
+
+L_Motor= GPIO.PWM(PWMA,100)
+L_Motor.start(0)
+
+R_Motor = GPIO.PWM(PWMB,100)
+R_Motor.start(0)
+
+speedSet = 50
+
+def main():
+    camera = cv2.VideoCapture(-1)
+    camera.set(3, 640)
+    camera.set(4, 480)
+    filepath = "/home/pi/AI_CAR/video/train"
+    i = 0
+    carState = "stop"
+    while( camera.isOpened() ):
+        
+        keyValue = cv2.waitKey(10)
+        
+        if keyValue == ord('q'):
+            break
+        elif keyValue == 82:                
+            print("go")
+            carState = "go"
+            motor_go(speedSet)
+        elif keyValue == 84:                
+            print("stop")
+            carState = "stop"
+            motor_stop()
+        elif keyValue == 81:                
+            print("left")
+            carState = "left"
+            motor_left(speedSet)
+        elif keyValue == 83:                
+            print("right")
+            carState = "right"
+            motor_right(speedSet)
+        
+        _, image = camera.read()
+        image = cv2.flip(image,-1)
+        cv2.imshow('Original', image)
+        
+        height, _, _ = image.shape
+        save_image = image[int(height/2):,:,:]
+        save_image = cv2.cvtColor(save_image, cv2.COLOR_BGR2YUV)
+        save_image = cv2.GaussianBlur(save_image, (3,3), 0)
+        save_image = cv2.resize(save_image, (200,66))
+        cv2.imshow('Save', save_image)
+        
+        if carState == "left":
+            cv2.imwrite("%s_%05d_%03d.png" % (filepath, i, 45), save_image)
+            i += 1
+        elif carState == "right":
+            cv2.imwrite("%s_%05d_%03d.png" % (filepath, i, 135), save_image)
+            i += 1
+        elif carState == "go":
+            cv2.imwrite("%s_%05d_%03d.png" % (filepath, i, 90), save_image)
+            i += 1
+        
+    cv2.destroyAllWindows()
+    
+if __name__ == '__main__':
+    main()
+    GPIO.cleanup()
+-----------------------------------------------------------------------------------------------------
+
+6. Qjoypad를 키고 python코드를 컨파일러하여 RC카를 조종한다.
+
+끝.
