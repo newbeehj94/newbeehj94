@@ -26,3 +26,12 @@ cd seeed_ircamera
 
 코드 실행.
 sudo python3 seeed_python_ircamera.py
+
+터미널 하나 더 실행
+$ sudo apt-get install python3-pyqt5
+$ sudo apt-get install qt5-defalut pyqt5-dev pyqt5-dev-tools
+$ sudo apt-get install qttols5-dev-tools
+
+$ sudo -H pip install --upgrade --ignore-istalled pip setuptools
+$ pip install --upgrade setuptools
+$ sudo python3 -m pip install pyqt5==5.15 pyqtchart==5.15
