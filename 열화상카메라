@@ -40,3 +40,5 @@ $ python3 thermal-camera-advanced.py
 
 카메라 미러모드 활성화
 $ python3 thermal-camera-advanced.py --mirror
+
+안되면 interface들어가서 camera enable되있는지 확인해보자
