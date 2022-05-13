@@ -1,0 +1,20 @@
+venv 설치하는 법
+ 
+cmd를 키고
+
+python -m venv 설치하고자 하는 위치
+ex)python -m venv trading
+
+dir
+누르면 trading 폴더와 폴더밑에 설치되어 있는 것을 볼 수 있음.
+
+
+trading\Scripts\activate.bat
+입력하면 (venv) C:\Users\~~~~~~ 로 출력되면서 가상환경 켜짐.
+
+vs코드에서도 터미널을 켜고 cmd로 터미널종류를 바꾸어서 trading\Scripts\activate.bat을 입력하면 된다.(파워쉘에서 하면 안됨)
+
+
+
+
+vs코드에서 자율주행 자동차 학습시키는 프로그램을 사용하도록 할것임.
