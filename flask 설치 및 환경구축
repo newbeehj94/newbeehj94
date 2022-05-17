@@ -1,0 +1,84 @@
+1. 파이썬 설치
+2. 가상환경 구축 및 소프트웨어 설치
+3. 배치파일 생성하기
+4. 파이참 설치하기
+
+
+1. 파이썬 설치
+www.python.org/downloads
+파이썬 설치파일 다운로드
+방금 내려받은 설치 파일을 실행한다.
+파이썬 설치 화면이 열리면 본격적으로 설치 작업을 하기 전에 반드시 아래쪽에 있는 <Add Python 3.10 to PATH> 옵션을 선택하자. 
+
+
+cmd를 켜서 python -V로 버전체크를 꼭 하도록 하자.
+Python 3.10.4 버전 안나오면 문제 있는거임.
+
+2. 가상환경 구축
+원하는 위치에 가상환경 구축 나는 C에 바로 깔거임.
+C:\> mkdir venvs
+cd venvs
+
+
+가상환경 구축
+C:\venvs> python -m venv myproject
+
+가상환경 진입하기
+C:\venvs> cd C:\venvs\myproject\Scripts
+C:\venvs\myproject\Scripts> activate
+(myproject) C:\venvs\myproject\Scripts>
+
+가상환경 벗어나기
+(myproject) C:\venvs\myproject\Scripts> deactivate
+C:\venvs\myproject\Scripts>
+
+가상환경에서 플라스크 설치
+(myproject) C:\venvs\myproject\Scripts> pip install flask
+
+pip최신버전 설치
+(myproject) C:\venvs\myproject\Scripts> python -m pip install --upgrade pip
+
+
+
+프로젝트 디렉터리 생성
+C:\> mkdir projects
+C:\> cd projects
+
+C:\projects> C:\venvs\myproject\Scripts\activate
+(myproject) C:\projects>
+(myproject) C:\projects> mkdir myproject
+(myproject) C:\projects> cd myproject
+(myproject) C:\projects\myproject>
+
+
+3. 배치파일 생성하기
+메모장을 키고
+파일명: C:/venvs/myproject.cmd
+@echo off
+cd c:/projects/myproject
+c:/venvs/myproject/scripts/activate
+입력하고 저장하고 venvs디렉터리 위치로.
+
+실행앱을 켜서 sysdm.cpl 명령을 입력
+시스템속성 창이 나타나면 고급탭을 선택하고 환경변수 버튼을 누름.
+사용자 변수 중 path를 선택하고 편집을 누른다.
+
+환경 변수 편집 창이 나타나면 새로만들기버튼을 누르고 C:\venvs라는 디렉터리를 추가하고 확인을 누른다.
+
+cmd창에서 set path를 입력하고 C:\venvs 디렉터리가 포함되어 있는지 확인한다.
+ex)
+C:\Users\pahkey> set path
+Path=C:\Windows\system32; (... 생략 ...) ;C:\venvs
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+
+C:\Users\사용자명> myproject
+(myproject) C:\projects\myproject>
+
+4. 파이참 설치하기
+
+https://www.jetbrains.com/ko-kr/pycharm/download/#section=windows
+설치파일 주소에 들어가서 무료버전 communitiy를 선택하여 파일을 다운받고 설치 진행 설치시 특별히 주의점 없음.
+
+open을 선택하여 플라스크 프로젝트위치 C:/projects/myproject를 선택
+
+파이썬 인터프리터 위치를 가상환경과 맞춤.
